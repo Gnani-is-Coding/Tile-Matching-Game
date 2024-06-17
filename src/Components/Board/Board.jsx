@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import './Board.css'
 
@@ -31,7 +31,16 @@ const tilesImages = [
               
 ]
 
+
+
 function Board() {
+    const [imagesObj, setImagesObj] = useState([])
+    const [currentView, setCurrentView] = useState('boardView')
+
+    useEffect(() => {
+        setImagesObj(tilesImages.sort(() => Math.random() - 0.5))
+    },[])
+
   return (
     <div className='container'>
     <h1 className='heading'>React Tiles</h1>
@@ -46,13 +55,24 @@ function Board() {
     <h1 style={{fontSize: '18px' }}><span style={{textDecoration: 'underline'}}>Welcome</span>, Gnani.🔥🔥</h1>
     </div>
 
-    <div className='tiles-items-container'>
-    {tilesImages.map(obj =>(
-        <li key={obj.id} className='tile-card'>   
-            <img src={obj.imageUrl} alt={obj.name} className='tile-img'/>
-        </li>
-    ))}
-    </div>
+    {currentView === 'scoreView' ? (
+        <div className='score-card-container'>
+            <h1 className='heading'>Game Finished!</h1>
+
+            <h1 className='score-heading'>Score: 12</h1>
+            <h1 className='score-heading'>Time Taken: 10:20</h1>
+            
+        </div>
+    ): (
+        <div className='tiles-items-container'>
+        {imagesObj.map(obj =>(
+            <li key={obj.id} className='tile-card'>
+                <img src={obj.imageUrl} alt={obj.name} className='tile-img tile-img-active'/>
+            </li>
+        ))}
+        </div>
+    )}
+    
     
     </div>
   </div>
