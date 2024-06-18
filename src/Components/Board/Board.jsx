@@ -39,7 +39,8 @@ function Board() {
     const [matchedList, setMatchedList] = useState([])
     const [flippedList, setFlippedList] = useState([])
     const [score, setScore] = useState(0)
-    const [time, setTime] = useState('5:00')
+    const [time, setTime] = useState('1:00')
+    const [TimerID, setTimerID] = useState(null)
 
     const onFlipCard = (index) => {
        
@@ -50,14 +51,18 @@ function Board() {
         4. 
         */}
         const imageName = imagesObj.filter(obj => obj.id === index)[0].name
+        console.log(matchedList)
+        if (matchedList.length === 5){
+            setCurrentView('scoreView')
+            clearTimeout(TimerID)
+        }
 
-        if (matchedList.includes(imageName)){
+        if (matchedList.includes(imageName)) {
             return
         }
         const currentFLippedTiles = [...flippedList, index]
         setFlippedList(currentFLippedTiles)
 
-        console.log(flippedList, ";flipped")
 
         if (currentFLippedTiles.length === 2){
             const storedFlippedImg = imagesObj.filter(obj => obj.id === flippedList[0])[0].name
@@ -89,6 +94,12 @@ function Board() {
             let mins = parseInt(time.split(':')[0])
             let secs = parseInt(time.split(':')[1])
 
+            if ((mins === 0 && secs === 0)){
+                setCurrentView('scoreView')
+                clearTimeout(timerId)
+                return
+            }
+
             if (secs === 0 ){
                 secs = 59
                 if (mins > 0){
@@ -101,11 +112,25 @@ function Board() {
             setTime(`${mins}:${secs < 10 ? `0${secs}`:`${secs}`}`) 
 
         },1000)
-
+         
+        setTimerID(timerId)
         return () => {
             clearTimeout(timerId)
         }
-    })
+    },[])
+
+
+    const timeTaken = () => {
+        let mins = parseInt(time.split(':')[0])
+        let secs = parseInt(time.split(':')[1])
+
+
+        const resultMins = 5-mins 
+        const resultSecs = 60 - secs 
+
+        return `${resultMins < 0 ? `0`:`${resultMins}`}:${resultSecs}`
+        
+    }
 
     // console.log(matchedList)
 
@@ -127,8 +152,8 @@ function Board() {
         <div className='score-card-container'>
             <h1 className='heading'>Game Finished!</h1>
 
-            <h1 className='score-heading'>Score: 12</h1>
-            <h1 className='score-heading'>Time Taken: 10:20</h1>
+            <h1 className='score-heading'>Score: {score}</h1>
+            <h1 className='score-heading'>Time Taken: {timeTaken()}</h1>
             
         </div>
     ): (

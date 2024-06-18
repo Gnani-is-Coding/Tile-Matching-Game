@@ -28,7 +28,7 @@ function App() {
       {currentView === 'Name' ? (
         <Name handlePlayClick = {setViewFunction}/>
       ):(
-        <Board/>
+        <Board handleCurrentView = {setViewFunction}/>
       )}
     </div>
   );
