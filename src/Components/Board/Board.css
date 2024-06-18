@@ -48,12 +48,16 @@
     object-fit: cover;
     width: 200px;
     display: none;
+    transition-property: display;
+    transition-delay: 0.5s;
 }
 .tile-img-active{
     display: flex;
     height: 100px;
     object-fit: cover;
     width: 200px;
+    transition-property: display;
+    transition-delay: 0.5s;
 }
 .score-card-container {
     display: flex;

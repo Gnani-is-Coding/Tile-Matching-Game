@@ -36,23 +36,91 @@ const tilesImages = [
 function Board() {
     const [imagesObj, setImagesObj] = useState([])
     const [currentView, setCurrentView] = useState('boardView')
+    const [matchedList, setMatchedList] = useState([])
+    const [flippedList, setFlippedList] = useState([])
+    const [score, setScore] = useState(0)
+    const [time, setTime] = useState('5:00')
+
+    const onFlipCard = (index) => {
+       
+        {/*#TODO 
+        1. SELECTED cards should turn around, Matched cards will be displayed 
+        2. select 2 cards, if they both match, inc score add them to matchedList
+        3. if they dont match, dec score.
+        4. 
+        */}
+        const imageName = imagesObj.filter(obj => obj.id === index)[0].name
+
+        if (matchedList.includes(imageName)){
+            return
+        }
+        const currentFLippedTiles = [...flippedList, index]
+        setFlippedList(currentFLippedTiles)
+
+        console.log(flippedList, ";flipped")
+
+        if (currentFLippedTiles.length === 2){
+            const storedFlippedImg = imagesObj.filter(obj => obj.id === flippedList[0])[0].name
+
+            if (storedFlippedImg === imageName){
+                console.log(storedFlippedImg)
+                setMatchedList([...matchedList, imageName])
+                setScore(score + 1)
+                setFlippedList([])
+            }
+            else {
+                setScore(score - 1)
+                setTimeout(() => {
+                    setFlippedList([])
+                },1000)   
+                //schedular is for removing flippingList variables after sometime so that they a=can be visible for som etime in output
+                
+            }
+        }
+    }
+    
 
     useEffect(() => {
         setImagesObj(tilesImages.sort(() => Math.random() - 0.5))
     },[])
+
+    useEffect(() => {
+        const timerId = setInterval(() => {
+            let mins = parseInt(time.split(':')[0])
+            let secs = parseInt(time.split(':')[1])
+
+            if (secs === 0 ){
+                secs = 59
+                if (mins > 0){
+                    mins = mins - 1
+                }
+            }
+            else {
+                secs = secs - 1
+            }
+            setTime(`${mins}:${secs < 10 ? `0${secs}`:`${secs}`}`) 
+
+        },1000)
+
+        return () => {
+            clearTimeout(timerId)
+        }
+    })
+
+    // console.log(matchedList)
 
   return (
     <div className='container'>
     <h1 className='heading'>React Tiles</h1>
 
     <div className='score-time-container'>
-    <p className='heading'>Score: 12</p>
-    <p className='heading'>Time: 10:00</p>
+    <p className='heading'>Score: {score}</p>
+    <p className='heading'>Time: {time}</p>
     </div>
 
     <div className='tiles-container'>
     <div className='welcome-container'>
-    <h1 style={{fontSize: '18px' }}><span style={{textDecoration: 'underline'}}>Welcome</span>, Gnani.🔥🔥</h1>
+    <h1 style={{fontSize: '18px' }}><span style={{textDecoration: 'underline'}}>Welcome</span>, {localStorage.getItem("username")}.🔥🔥</h1>
     </div>
 
     {currentView === 'scoreView' ? (
@@ -66,8 +134,8 @@ function Board() {
     ): (
         <div className='tiles-items-container'>
         {imagesObj.map(obj =>(
-            <li key={obj.id} className='tile-card'>
-                <img src={obj.imageUrl} alt={obj.name} className='tile-img tile-img-active'/>
+            <li key={obj.id} className='tile-card' onClick={() => onFlipCard(obj.id)}>
+                <img src={obj.imageUrl} alt={obj.name} className={matchedList.includes(obj.name) || flippedList.includes(obj.id) ? 'tile-img-active':'tile-img'}/>
             </li>
         ))}
         </div>
