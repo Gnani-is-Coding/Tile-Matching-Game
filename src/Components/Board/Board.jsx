@@ -39,7 +39,7 @@ function Board() {
     const [matchedList, setMatchedList] = useState([])
     const [flippedList, setFlippedList] = useState([])
     const [score, setScore] = useState(0)
-    const [time, setTime] = useState('1:00')
+    const [time, setTime] = useState('3:00')
     const [TimerID, setTimerID] = useState(null)
 
     const onFlipCard = (index) => {
@@ -117,7 +117,7 @@ function Board() {
         return () => {
             clearTimeout(timerId)
         }
-    },[])
+    },[time])
 
 
     const timeTaken = () => {
